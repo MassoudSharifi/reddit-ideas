@@ -7,10 +7,12 @@ import {
   Param,
   Body,
   UsePipes,
+  UseGuards,
 } from '@nestjs/common';
 import { IdeaService } from './idea.service';
 import { IdeaDto } from './idea.dto';
 import { ValidationPipe } from 'src/utils/validation.pipe';
+import { AuthGuard } from 'src/utils/auth.guard';
 
 @Controller('api/idea')
 export class IdeaController {
@@ -28,6 +30,7 @@ export class IdeaController {
 
   @Post()
   @UsePipes(ValidationPipe)
+  @UseGuards(new AuthGuard)
   create(@Body() data: Partial<IdeaDto>) {
     return this.ideaService.create(data);
   }

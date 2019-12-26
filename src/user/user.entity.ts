@@ -29,8 +29,8 @@ export class UserEntity {
     this.password = await bcrypt.hash(this.password, 10);
   }
 
-  async isValidPassword(plainPassword) {
-    return bcrypt.compare(plainPassword, this.password);
+  async isValidPassword(attempt: string): Promise<boolean> {
+    return await bcrypt.compare(attempt, this.password);
   }
 
   toResponseObject(withToken = true) {
