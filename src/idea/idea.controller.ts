@@ -13,6 +13,7 @@ import { IdeaService } from './idea.service';
 import { IdeaDto } from './idea.dto';
 import { ValidationPipe } from 'src/utils/validation.pipe';
 import { AuthGuard } from 'src/utils/auth.guard';
+import { User } from 'src/user/user.decorator';
 
 @Controller('api/idea')
 export class IdeaController {
@@ -30,18 +31,24 @@ export class IdeaController {
 
   @Post()
   @UsePipes(ValidationPipe)
-  @UseGuards(new AuthGuard)
-  create(@Body() data: Partial<IdeaDto>) {
-    return this.ideaService.create(data);
+  @UseGuards(new AuthGuard())
+  create(@Body() data: Partial<IdeaDto>, @User('id') userId: string) {
+    return this.ideaService.create(data, userId);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() data: Partial<IdeaDto>) {
-    return this.ideaService.update(id, data);
+  @UseGuards(new AuthGuard())
+  update(
+    @Param('id') id: string,
+    @Body() data: Partial<IdeaDto>,
+    @User('id') userId: string,
+  ) {
+    return this.ideaService.update(id, userId, data);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string) {
-    return this.ideaService.delete(id);
+  @UseGuards(new AuthGuard())
+  delete(@Param('id') id: string, @User('id') userId: string) {
+    return this.ideaService.delete(id, userId);
   }
 }

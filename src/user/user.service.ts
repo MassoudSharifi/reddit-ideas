@@ -12,16 +12,23 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async findAll(): Promise<UserDTO[]> {
-    return await this.userRepository.find();
+  async findAll(): Promise<UserRegisterDTO[]> {
+    const users = await this.userRepository.find({ relations: ['ideas'] });
+    return users.map(user => user.toResponseObject());
   }
 
   async login(data: UserDTO): Promise<UserRegisterDTO> {
     const { username, password } = data;
-    const user = await this.userRepository.findOne({ where: { username } });
-    
+    const user = await this.userRepository.findOne({
+      where: { username },
+      relations: ['ideas'],
+    });
+
     if (!user || !(await user.isValidPassword(password))) {
-      throw new HttpException('Invalid username/password', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Invalid username/password',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     return user.toResponseObject();
@@ -29,7 +36,9 @@ export class UserService {
 
   async register(data: UserDTO): Promise<UserRegisterDTO> {
     const { username } = data;
-    const isUserExists = await this.userRepository.findOne({ where: { username } });
+    const isUserExists = await this.userRepository.findOne({
+      where: { username },
+    });
     if (isUserExists) {
       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }
@@ -38,7 +47,10 @@ export class UserService {
       const user = await this.userRepository.save(data);
       return user.toResponseObject();
     } catch {
-      throw new HttpException('Invalid username/password', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Invalid username/password',
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 }
