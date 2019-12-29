@@ -13,7 +13,9 @@ export class UserService {
   ) {}
 
   async findAll(): Promise<UserRegisterDTO[]> {
-    const users = await this.userRepository.find({ relations: ['ideas'] });
+    const users = await this.userRepository.find({
+      relations: ['ideas', 'bookmarks'],
+    });
     return users.map(user => user.toResponseObject());
   }
 
@@ -21,7 +23,7 @@ export class UserService {
     const { username, password } = data;
     const user = await this.userRepository.findOne({
       where: { username },
-      relations: ['ideas'],
+      relations: ['ideas', 'bookmarks'],
     });
 
     if (!user || !(await user.isValidPassword(password))) {

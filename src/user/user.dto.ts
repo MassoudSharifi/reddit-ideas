@@ -11,4 +11,5 @@ export class UserRegisterDTO {
   created: Date;
   token?: string;
   ideas?: IdeaEntity[];
+  bookmarks?: IdeaEntity[];
 }

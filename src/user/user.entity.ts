@@ -7,6 +7,8 @@ import {
   BeforeInsert,
   UpdateDateColumn,
   OneToMany,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
@@ -33,9 +35,13 @@ export class UserEntity {
 
   @OneToMany(
     _ => IdeaEntity,
-    idea => idea.user,
+    idea => idea.author,
   )
   ideas: IdeaEntity[];
+
+  @ManyToMany(_ => IdeaEntity, { cascade: true })
+  @JoinTable()
+  bookmarks: IdeaEntity[];
 
   @BeforeInsert()
   private async beforeInsert() {
@@ -60,6 +66,10 @@ export class UserEntity {
 
     if (this.ideas) {
       responseObject.ideas = this.ideas;
+    }
+
+    if (this.bookmarks) {
+      responseObject.bookmarks = this.bookmarks;
     }
 
     return responseObject;
