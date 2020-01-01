@@ -52,8 +52,13 @@ export class IdeaService {
     return idea;
   }
 
-  async findAll() {
-    const ideas = await this.ideaRepository.find({ relations: ['author'] });
+  async findAll(page: number = 1) {
+    const ideas = await this.ideaRepository.find({
+      relations: ['author'],
+      take: 25,
+      skip: 25 * (page - 1),
+    });
+
     return ideas.map(idea => this.toResponseObject(idea));
   }
 

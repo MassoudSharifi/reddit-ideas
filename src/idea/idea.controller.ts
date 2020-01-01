@@ -8,6 +8,7 @@ import {
   Body,
   UsePipes,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { IdeaService } from './idea.service';
 import { IdeaDto } from './idea.dto';
@@ -20,8 +21,8 @@ export class IdeaController {
   constructor(private readonly ideaService: IdeaService) {}
 
   @Get()
-  findAll() {
-    return this.ideaService.findAll();
+  findAll(@Query('page') page) {
+    return this.ideaService.findAll(page);
   }
 
   @Get(':id')
