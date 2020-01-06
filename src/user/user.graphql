@@ -1,0 +1,8 @@
+type User {
+  username: String!
+  token: String!
+}
+
+type Query {
+  users: [User!]
+}
