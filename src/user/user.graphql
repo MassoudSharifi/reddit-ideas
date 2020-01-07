@@ -1,8 +1,29 @@
+type Comment {
+  comment: String!
+}
+
+type Idea {
+  idea: String!
+  description: String!
+}
+
 type User {
+  id: ID!
   username: String!
+  created: String!
   token: String!
+  ideas: [Idea!]
+  bookmarks: [Idea!]
+  comments: [Comment!]
 }
 
 type Query {
   users: [User!]
+  user(username: String!): User
+  whoami: User
+}
+
+type Mutation {
+  login(username: String, password: String): User!
+  register(username: String, password: String): User!
 }
